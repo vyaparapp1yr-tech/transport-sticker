@@ -164,6 +164,11 @@
     }
 
     .row b { color: #657786; }
+    
+.scan-mode header,
+.scan-mode main {
+  display: none;
+}
 
     @media (max-width: 850px) {
       .wrap, .grid {
@@ -427,11 +432,13 @@
       }, 1200);
     });
 
-    if (location.hash.startsWith("#data=")) {
-      const record = decode(location.hash.replace("#data=", ""));
-      generate(record);
-      showDetails(record);
-    }
+if (location.hash.startsWith("#data=")) {
+  const record = decode(location.hash.replace("#data=", ""));
+
+  document.body.classList.add("scan-mode");
+  showDetails(record);
+}
+
   </script>
 </body>
 </html>
