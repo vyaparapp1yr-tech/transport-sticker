@@ -1,0 +1,436 @@
+<!doctype html>
+<html lang="hi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Transport Sticker Generator</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #eef4f7;
+      color: #182027;
+    }
+
+    header {
+      padding: 22px;
+      background: white;
+      border-bottom: 1px solid #d7e0e8;
+    }
+
+    h1, h2, p { margin: 0; }
+
+    h1 { font-size: 28px; }
+
+    .wrap {
+      display: grid;
+      grid-template-columns: 1.4fr 0.8fr;
+      gap: 20px;
+      padding: 22px;
+    }
+
+    .box {
+      background: white;
+      border: 1px solid #d7e0e8;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.07);
+    }
+
+    form {
+      display: grid;
+      gap: 14px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    label {
+      font-weight: 700;
+      font-size: 14px;
+      display: grid;
+      gap: 6px;
+    }
+
+    input, textarea {
+      padding: 11px;
+      border: 1px solid #bdcad5;
+      border-radius: 6px;
+      font-size: 15px;
+      width: 100%;
+    }
+
+    button {
+      border: 0;
+      border-radius: 6px;
+      padding: 12px 16px;
+      font-weight: 800;
+      cursor: pointer;
+      background: #0f766e;
+      color: white;
+      font-size: 15px;
+    }
+
+    .secondary {
+      background: white;
+      color: #182027;
+      border: 1px solid #bdcad5;
+    }
+
+    .sticker {
+      border: 2px dashed #657786;
+      border-radius: 8px;
+      padding: 16px;
+      background: #fff;
+    }
+
+    .sticker-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .small {
+      color: #0f766e;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    #qr {
+      display: grid;
+      place-items: center;
+      min-height: 240px;
+      border: 1px solid #d7e0e8;
+      border-radius: 8px;
+      margin: 12px 0;
+      padding: 12px;
+      background: white;
+    }
+
+    .summary {
+      display: grid;
+      gap: 8px;
+      font-size: 14px;
+    }
+
+    .summary div {
+      display: grid;
+      grid-template-columns: 95px 1fr;
+      border-bottom: 1px solid #edf1f4;
+      padding-bottom: 7px;
+    }
+
+    .summary b { color: #657786; }
+
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    dialog {
+      width: min(720px, 94vw);
+      border: 0;
+      border-radius: 8px;
+      padding: 22px;
+    }
+
+    dialog::backdrop {
+      background: rgba(0,0,0,.45);
+    }
+
+    .details {
+      display: grid;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 150px 1fr;
+      gap: 12px;
+      border-bottom: 1px solid #edf1f4;
+      padding-bottom: 8px;
+    }
+
+    .row b { color: #657786; }
+
+    @media (max-width: 850px) {
+      .wrap, .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media print {
+      header, form, .actions, .hide-print {
+        display: none !important;
+      }
+
+      body {
+        background: white;
+      }
+
+      .wrap {
+        display: block;
+        padding: 0;
+      }
+
+      .box {
+        box-shadow: none;
+        border: 0;
+      }
+
+      .sticker {
+        width: 95mm;
+        border: 2px solid black;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <p class="small">Main Office Transport Desk</p>
+    <h1>Transport Sticker Generator</h1>
+  </header>
+
+  <main class="wrap">
+    <section class="box">
+      <h2>Transport Details</h2>
+      <br>
+
+      <form id="form">
+        <div class="grid">
+          <label>Docket No. *
+            <input name="lrNo" required placeholder="DKT-2026-001">
+          </label>
+
+          <label>Date *
+            <input name="date" type="date" required>
+          </label>
+        </div>
+
+        <div class="grid">
+          <label>Transporter Name *
+            <input name="transporter" required placeholder="ABC Logistics">
+          </label>
+
+          <label>Vehicle No.
+            <input name="vehicleNo" placeholder="Optional">
+          </label>
+        </div>
+
+        <div class="grid">
+          <label>From *
+            <input name="fromPlace" required placeholder="Dispatch location">
+          </label>
+
+          <label>To *
+            <input name="toPlace" required placeholder="Delivery location">
+          </label>
+        </div>
+
+        <div class="grid">
+          <label>Sender Name *
+            <input name="sender" required placeholder="Sender name">
+          </label>
+
+          <label>Sender Number *
+            <input name="senderNumber" required inputmode="tel" placeholder="9876543210">
+          </label>
+        </div>
+
+        <div class="grid">
+          <label>Receiver *
+            <input name="receiver" required placeholder="Receiver name/company">
+          </label>
+
+          <label>Driver Mobile
+            <input name="driverMobile" inputmode="tel" placeholder="Optional">
+          </label>
+        </div>
+
+        <div class="grid">
+          <label>Material *
+            <input name="material" required placeholder="Material name">
+          </label>
+
+          <label>Quantity *
+            <input name="quantity" required placeholder="25 boxes">
+          </label>
+        </div>
+
+        <label>Remarks *
+          <textarea name="remarks" rows="3" required placeholder="Office ya delivery instruction"></textarea>
+        </label>
+
+        <button type="submit">Generate Sticker</button>
+      </form>
+    </section>
+
+    <section class="box">
+      <h2>Generated Sticker</h2>
+      <br>
+
+      <article class="sticker">
+        <div class="sticker-head">
+          <div>
+            <span class="small">Transport Sticker</span>
+            <h2 id="stickerNo">No entry yet</h2>
+          </div>
+          <span class="small">Scan QR</span>
+        </div>
+
+        <div id="qr"></div>
+
+        <div class="summary">
+          <div><b>Route</b><span id="route">-</span></div>
+          <div><b>Vehicle</b><span id="vehicle">-</span></div>
+          <div><b>Material</b><span id="materialText">-</span></div>
+          <div><b>Receiver</b><span id="receiver">-</span></div>
+        </div>
+
+        <p style="margin-top:12px;color:#657786;font-size:13px;">
+          Scan karne par complete transport details show hongi.
+        </p>
+      </article>
+
+      <div class="actions">
+        <button onclick="window.print()">Print Sticker</button>
+        <button class="secondary" id="copyBtn" type="button">Copy Scan Link</button>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="dialog">
+    <h2>Scanned Transport Details</h2>
+    <div class="details" id="details"></div>
+    <br>
+    <button onclick="window.print()">Print Details</button>
+    <button class="secondary hide-print" onclick="dialog.close()">Close</button>
+  </dialog>
+
+  <script>
+    const form = document.getElementById("form");
+    const qrBox = document.getElementById("qr");
+    const dialog = document.getElementById("dialog");
+
+    const labels = {
+      lrNo: "Docket No.",
+      date: "Date",
+      transporter: "Transporter",
+      vehicleNo: "Vehicle No.",
+      fromPlace: "From",
+      toPlace: "To",
+      sender: "Sender Name",
+      senderNumber: "Sender Number",
+      receiver: "Receiver",
+      driverMobile: "Driver Mobile",
+      material: "Material",
+      quantity: "Quantity",
+      remarks: "Remarks"
+    };
+
+    function setTodayDate() {
+      form.date.value = new Date().toISOString().slice(0, 10);
+    }
+
+    setTodayDate();
+
+    function encode(data) {
+      return btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+    }
+
+    function decode(data) {
+      return JSON.parse(decodeURIComponent(escape(atob(data))));
+    }
+
+    function getRecord() {
+      return Object.fromEntries(new FormData(form).entries());
+    }
+
+    function getScanLink(record) {
+      const websiteUrl = "https://vyaparapplyr-tech.github.io/transport-sticker/";
+      return websiteUrl + "#data=" + encode(record);
+    }
+
+    function generate(record) {
+      const link = getScanLink(record);
+
+      qrBox.innerHTML = "";
+
+      new QRCode(qrBox, {
+        text: link,
+        width: 210,
+        height: 210
+      });
+
+      document.getElementById("stickerNo").textContent = record.lrNo || "-";
+
+      document.getElementById("route").textContent =
+        `${record.fromPlace || "-"} to ${record.toPlace || "-"}`;
+
+      document.getElementById("vehicle").textContent =
+        record.vehicleNo || "-";
+
+      document.getElementById("materialText").textContent =
+        `${record.material || "-"} / ${record.quantity || "-"}`;
+
+      document.getElementById("receiver").textContent =
+        record.receiver || "-";
+    }
+
+    function showDetails(record) {
+      const details = document.getElementById("details");
+      details.innerHTML = "";
+
+      Object.keys(labels).forEach(key => {
+        const row = document.createElement("div");
+        row.className = "row";
+        row.innerHTML = `<b>${labels[key]}</b><span>${record[key] || "-"}</span>`;
+        details.appendChild(row);
+      });
+
+      dialog.showModal();
+    }
+
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const record = getRecord();
+      generate(record);
+
+      form.reset();
+      setTodayDate();
+    });
+
+    document.getElementById("copyBtn").addEventListener("click", async function() {
+      const record = getRecord();
+      const link = getScanLink(record);
+
+      await navigator.clipboard.writeText(link);
+
+      this.textContent = "Copied";
+      setTimeout(() => {
+        this.textContent = "Copy Scan Link";
+      }, 1200);
+    });
+
+    if (location.hash.startsWith("#data=")) {
+      const record = decode(location.hash.replace("#data=", ""));
+      generate(record);
+      showDetails(record);
+    }
+  </script>
+</body>
+</html>
