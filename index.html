@@ -59,7 +59,8 @@
       gap: 6px;
     }
 
-    input, textarea {
+    input, textarea, select {
+
       padding: 11px;
       border: 1px solid #bdcad5;
       border-radius: 6px;
@@ -258,14 +259,28 @@
 
       <form id="form">
         <div class="grid">
-          <label>Docket No. *
-            <input name="lrNo" required placeholder="DKT-2026-001">
-          </label>
+  <label>Docket No. *
+    <input name="lrNo" required placeholder="DKT-2026-001">
+  </label>
 
-          <label>Date *
-            <input name="date" type="date" required>
-          </label>
-        </div>
+  <label>Date *
+    <input name="date" type="date" required>
+  </label>
+</div>
+
+<div class="grid">
+  <label>Time *
+    <input name="time" type="time" required>
+  </label>
+
+  <label>Scan Status *
+    <select name="scanStatus" required>
+      <option value="Not Scanned">Not Scanned</option>
+      <option value="Scanned">Scanned</option>
+    </select>
+  </label>
+</div>
+
 
         <div class="grid">
           <label>Transporter Name *
@@ -391,6 +406,9 @@ const liveScanDetails = document.getElementById("liveScanDetails");
     const labels = {
       lrNo: "Docket No.",
       date: "Date",
+      time: "Time",
+      scanStatus: "Scan Status",
+
       transporter: "Transporter",
       vehicleNo: "Vehicle No.",
       fromPlace: "From",
@@ -405,10 +423,19 @@ const liveScanDetails = document.getElementById("liveScanDetails");
     };
 
     function setTodayDate() {
-      form.date.value = new Date().toISOString().slice(0, 10);
-    }
+  form.date.value = new Date().toISOString().slice(0, 10);
+}
+
+function setCurrentTime() {
+  const now = new Date();
+  form.time.value = String(now.getHours()).padStart(2, "0") + ":" +
+    String(now.getMinutes()).padStart(2, "0");
+}
+
 
     setTodayDate();
+    setCurrentTime();
+
 
     function encode(data) {
       return btoa(unescape(encodeURIComponent(JSON.stringify(data))));
@@ -433,11 +460,13 @@ const liveScanDetails = document.getElementById("liveScanDetails");
 
       qrBox.innerHTML = "";
 
-      new QRCode(qrBox, {
-        text: link,
-        width: 210,
-        height: 210
-      });
+     new QRCode(qrBox, {
+  text: link,
+  width: 360,
+  height: 360,
+  correctLevel: QRCode.CorrectLevel.L
+});
+
 
       document.getElementById("stickerNo").textContent = record.lrNo || "-";
 
@@ -508,8 +537,10 @@ scanInput.addEventListener("keydown", function(e) {
       const record = getRecord();
       generate(record);
 
-      form.reset();
-      setTodayDate();
+     form.reset();
+setTodayDate();
+setCurrentTime();
+
     });
 
     document.getElementById("copyBtn").addEventListener("click", async function() {
