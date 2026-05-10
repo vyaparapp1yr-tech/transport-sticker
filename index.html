@@ -326,6 +326,19 @@
     </section>
 
     <section class="box">
+      <section class="box">
+  <h2>Office Scan Mode</h2>
+  <br>
+
+  <input id="scanInput" placeholder="Scanner cursor yahan rakhein" autofocus>
+
+  <p style="margin-top:10px;color:#657786;font-size:13px;">
+    Is box me cursor rakho, scanner se QR scan karo. Details yahin show hongi.
+  </p>
+
+  <div class="details" id="liveScanDetails"></div>
+</section>
+
       <h2>Generated Sticker</h2>
       <br>
 
@@ -371,6 +384,9 @@
     const form = document.getElementById("form");
     const qrBox = document.getElementById("qr");
     const dialog = document.getElementById("dialog");
+    const scanInput = document.getElementById("scanInput");
+const liveScanDetails = document.getElementById("liveScanDetails");
+
 
     const labels = {
       lrNo: "Docket No.",
@@ -451,6 +467,40 @@
 
       dialog.showModal();
     }
+function showLiveDetails(record) {
+  liveScanDetails.innerHTML = "";
+
+  Object.keys(labels).forEach(key => {
+    const row = document.createElement("div");
+    row.className = "row";
+    row.innerHTML = `<b>${labels[key]}</b><span>${record[key] || "-"}</span>`;
+    liveScanDetails.appendChild(row);
+  });
+
+  scanInput.focus();
+}
+scanInput.addEventListener("keydown", function(e) {
+  if (e.key !== "Enter") return;
+
+  const scannedText = scanInput.value.trim();
+  scanInput.value = "";
+
+  const hashPart = scannedText.split("#data=")[1];
+
+  if (!hashPart) {
+    liveScanDetails.innerHTML = "<b>Invalid QR</b>";
+    scanInput.focus();
+    return;
+  }
+
+  try {
+    const record = decode(hashPart);
+    showLiveDetails(record);
+  } catch (error) {
+    liveScanDetails.innerHTML = "<b>QR read nahi ho paaya</b>";
+    scanInput.focus();
+  }
+});
 
     form.addEventListener("submit", function(e) {
       e.preventDefault();
