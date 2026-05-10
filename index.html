@@ -177,29 +177,71 @@
     }
 
     @media print {
-      header, form, .actions, .hide-print {
-        display: none !important;
-      }
+  @page {
+    size: 100mm 50mm;
+    margin: 0;
+  }
 
-      body {
-        background: white;
-      }
+  body {
+    margin: 0;
+    background: white;
+  }
 
-      .wrap {
-        display: block;
-        padding: 0;
-      }
+  header,
+  form,
+  h2,
+  .summary,
+  .actions,
+  .small,
+  p,
+  dialog {
+    display: none !important;
+  }
 
-      .box {
-        box-shadow: none;
-        border: 0;
-      }
+  .wrap {
+    display: block;
+    padding: 0;
+  }
 
-      .sticker {
-        width: 95mm;
-        border: 2px solid black;
-      }
-    }
+  .box {
+    display: none;
+  }
+
+  .box:last-child {
+    display: block;
+    border: 0;
+    box-shadow: none;
+    padding: 0;
+  }
+
+  .sticker {
+    width: 100mm;
+    height: 50mm;
+    border: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .sticker-head {
+    display: none;
+  }
+
+  #qr {
+    border: 0;
+    margin: 0;
+    padding: 0;
+    min-height: auto;
+  }
+
+  #qr img,
+  #qr canvas {
+    width: 42mm !important;
+    height: 42mm !important;
+  }
+}
+
   </style>
 </head>
 
